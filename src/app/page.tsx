@@ -96,7 +96,7 @@ export default function LandingPage() {
                 alt="Bergia Logo" 
                 fill
                 className="object-contain filter drop-shadow-lg" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuClvdGt3UDrpQtxRKbu4x8SedJUChJJS4pLtsah4we1z8rq1JaGkDZ6aQQHqigwprMrik3VLd-OUOcXA1rgrEzMssLoMoAghyLlT2lQZEDDPX7n-HzrF3VkvHLbHbjEMue4gbZ6moe1gGGgL4r_P-K06ieNcwVUfD8hcPI7_9s16YyljTHT6HTThJkI2Tvcm9e801NY3FqTYhRjFLoqwXEdXEkS7-S61WboUxHU3MD0wSZgA68-iAyEPkXRRrhqZnG1Y-cCgs6iqFE"
+                src="/logo.png"
                />
             </div>
           </div>
