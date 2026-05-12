@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import PlayerCard from "@/components/student/PlayerCard";
 import { QRCodeSVG } from "qrcode.react";
 import Link from "next/link";
+import EditProfileForm from "@/components/student/EditProfileForm";
 
 export default async function MyPage() {
   const supabase = await createClient();
@@ -27,7 +28,7 @@ export default async function MyPage() {
 
   const studentMetadata = profile.student_metadata || {};
   const skills = studentMetadata.skills || ["Communication", "Problem Solving", "Strategy"];
-  const university = studentMetadata.university || "University";
+  const university = studentMetadata.university_name || studentMetadata.university || "未設定";
 
   const profileUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/student/${user.id}`;
 
@@ -74,10 +75,14 @@ export default async function MyPage() {
                 <span className="material-symbols-outlined text-primary">edit</span>
                 Edit Profile
               </h3>
-              {/* Profile Edit Form would go here */}
-              <button className="student-gradient text-white px-lg py-md rounded-full font-label-sm text-label-sm hover:scale-105 transition-transform">
-                プロフィールを編集する
-              </button>
+              <EditProfileForm 
+                initialData={{
+                  full_name: profile.full_name || "",
+                  bio: profile.bio || "",
+                  university: university,
+                  skills: skills,
+                }}
+              />
             </div>
           </div>
         </div>

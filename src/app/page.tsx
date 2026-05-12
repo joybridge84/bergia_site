@@ -14,20 +14,27 @@ export default function LandingPage() {
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>, role: 'student' | 'enterprise') => {
     e.preventDefault();
     setLoading(true);
-    
+
     const formData = new FormData(e.currentTarget);
     formData.append('role', role);
-    
+
+    if (role === 'enterprise') {
+      const company = formData.get('company') as string;
+      const contactName = formData.get('contactName') as string;
+      formData.set('fullName', `${company} (${contactName})`);
+    }
+
     // Construct metadata
     const metadata: Record<string, any> = {};
     if (role === 'student') {
-      metadata.university = formData.get('university');
+      metadata.university_name = formData.get('university');
       metadata.skills = ["Communication", "Strategy"]; // Defaults
     } else {
       metadata.company_name = formData.get('company');
+      metadata.contact_name = formData.get('contactName');
+      metadata.message = formData.get('message');
     }
     formData.append('metadata', JSON.stringify(metadata));
-    formData.append('password', 'TemporaryPassword123!'); // For demo/simplicity, or add password field
 
     try {
       await signup(formData);
@@ -53,8 +60,8 @@ export default function LandingPage() {
           <Link className="text-on-surface-variant hover:text-primary transition-colors duration-300 font-label-sm text-label-sm" href="#benefits">Benefits</Link>
         </div>
         <div className="flex items-center gap-md">
-          <button className="hidden sm:block text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm">Login</button>
-          <button className="student-gradient text-white px-md py-xs rounded-full font-label-sm text-label-sm hover:scale-105 transition-transform duration-300 shadow-lg shadow-primary/20">Get Started</button>
+          <Link className="hidden sm:block text-on-surface-variant hover:text-primary transition-colors font-label-sm text-label-sm" href="/login">Login</Link>
+          <Link className="student-gradient text-white px-md py-xs rounded-full font-label-sm text-label-sm hover:scale-105 transition-transform duration-300 shadow-lg shadow-primary/20" href="#registration">Get Started</Link>
         </div>
       </nav>
 
@@ -82,24 +89,30 @@ export default function LandingPage() {
               君の挑戦に、<br />
               <span className="text-primary vibrant-glow">スポットライト</span>を。
             </h1>
-            <button className="student-gradient text-white px-lg py-md rounded-full font-headline-md text-headline-md hover:scale-102 transition-transform shadow-2xl shadow-primary/40 border border-white/20">
-              挑戦を始める
-            </button>
+            <Link href="#registration">
+              <button className="student-gradient text-white px-lg py-md rounded-full font-headline-md text-headline-md hover:scale-102 transition-transform shadow-2xl shadow-primary/40 border border-white/20">
+                挑戦を始める
+              </button>
+            </Link>
           </div>
         </div>
 
         {/* Center: Floating Logo */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden md:block">
-          <div className="glass-card p-md rounded-full glow-purple">
+          <motion.div 
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="glass-card p-md rounded-full glow-purple"
+          >
             <div className="w-32 h-32 relative">
-               <Image 
-                alt="Bergia Logo" 
+              <Image
+                alt="Bergia Logo"
                 fill
-                className="object-contain filter drop-shadow-lg" 
+                className="object-contain filter drop-shadow-lg"
                 src="/logo.png"
-               />
+              />
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Right: Enterprises */}
@@ -111,9 +124,11 @@ export default function LandingPage() {
               地域の未来を、<br />
               <span className="text-secondary vibrant-glow">共に創る</span>。
             </h2>
-            <button className="bg-secondary text-on-secondary px-lg py-md rounded-full font-headline-md text-headline-md hover:scale-102 transition-transform shadow-2xl shadow-secondary/40">
-              パートナー参画
-            </button>
+            <Link href="#registration">
+              <button className="bg-secondary text-on-secondary px-lg py-md rounded-full font-headline-md text-headline-md hover:scale-102 transition-transform shadow-2xl shadow-secondary/40">
+                パートナー参画
+              </button>
+            </Link>
           </div>
         </div>
       </header>
@@ -227,22 +242,24 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="glass-card p-lg rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden relative border-secondary/20">
-            <Image 
+            <Image
               fill
-              className="object-cover opacity-30 mix-blend-overlay" 
+              className="object-cover opacity-30 mix-blend-overlay"
               alt="Professional team meeting"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB45FW-X90_ILxsaQcAa6hJOzsGa9Smp81sHo6Xgiva7VBrvm-qQArgBP9wS7V0PzyWmxTlRc4T75joYM3BRC_5zVWoxf7KvDG1rl3MzOdkyndsC2vsAdAGMVY60k1I_phUQDd1lDMElca7LOH1iG6ghHrq5NF3PpZdqlSmitkIUABFRGYq8HqMk7RUMPE3wDnVlpTt_6WtloVto_7T3mGBLL4B6phMfcT0k7DeQd78wtmrMGFbxNIPv7KXJ00BYh3qK6s8S7IA7uY"
+              src="/enterprise-hero.jpg"
             />
             <div className="relative z-10 p-md bg-surface/40 backdrop-blur-md rounded-xl">
               <h3 className="font-headline-md text-headline-md mb-md">採用ブランディングを<br />加速させる</h3>
-              <button className="bg-secondary text-on-secondary px-lg py-md rounded-full hover:scale-105 transition-transform shadow-lg shadow-secondary/30">資料ダウンロード</button>
+              <Link href="#registration">
+                <button className="bg-secondary text-on-secondary px-lg py-md rounded-full hover:scale-105 transition-transform shadow-lg shadow-secondary/30">資料ダウンロード</button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Registration Section */}
-      <section className="py-xl bg-surface-container-lowest relative overflow-hidden">
+      <section id="registration" className="py-xl bg-surface-container-lowest relative overflow-hidden">
         <div className="absolute -bottom-48 left-1/2 -translate-x-1/2 w-full h-96 bg-primary/10 blur-[150px] rounded-full"></div>
         <div className="max-w-container-max mx-auto px-gutter relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-xl">
@@ -250,20 +267,20 @@ export default function LandingPage() {
             <div className="glass-card p-xl rounded-2xl border-primary/40 shadow-2xl shadow-primary/10 relative">
               <AnimatePresence>
                 {loading && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="absolute inset-0 z-50 bg-surface/80 backdrop-blur-sm flex items-center justify-center rounded-2xl"
                   >
                     <div className="text-center relative">
-                      <motion.div 
-                        animate={{ 
+                      <motion.div
+                        animate={{
                           scale: [1, 1.5, 1],
                           rotate: [0, 180, 360],
                           borderRadius: ["20%", "50%", "20%"]
                         }}
-                        transition={{ 
+                        transition={{
                           duration: 2,
                           repeat: Infinity,
                           ease: "easeInOut"
@@ -296,6 +313,10 @@ export default function LandingPage() {
                   <label className="block font-label-sm text-label-sm mb-xs text-primary/80">University / 大学名・学年</label>
                   <input name="university" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface transition-colors p-base" placeholder="〇〇大学 3年" type="text" />
                 </div>
+                <div>
+                  <label className="block font-label-sm text-label-sm mb-xs text-primary/80">Password / パスワード</label>
+                  <input name="password" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface transition-colors p-base" placeholder="••••••••" type="password" />
+                </div>
                 <button className="w-full student-gradient text-white py-md rounded-xl font-headline-md text-headline-md mt-md shadow-xl shadow-primary/20 hover:brightness-110 transition-all" type="submit">エントリーする</button>
               </form>
             </div>
@@ -310,12 +331,20 @@ export default function LandingPage() {
                   <input name="company" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-secondary focus:ring-0 text-on-surface transition-colors p-base" placeholder="株式会社〇〇" type="text" />
                 </div>
                 <div>
+                  <label className="block font-label-sm text-label-sm mb-xs text-secondary/80">Contact Person / 担当者名</label>
+                  <input name="contactName" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-secondary focus:ring-0 text-on-surface transition-colors p-base" placeholder="山田 太郎" type="text" />
+                </div>
+                <div>
                   <label className="block font-label-sm text-label-sm mb-xs text-secondary/80">Work Email / 担当者メールアドレス</label>
                   <input name="email" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-secondary focus:ring-0 text-on-surface transition-colors p-base" placeholder="biz@company.com" type="email" />
                 </div>
                 <div>
                   <label className="block font-label-sm text-label-sm mb-xs text-secondary/80">Message / お問い合わせ内容</label>
                   <textarea name="message" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-secondary focus:ring-0 text-on-surface transition-colors p-base" rows={3}></textarea>
+                </div>
+                <div>
+                  <label className="block font-label-sm text-label-sm mb-xs text-secondary/80">Password / パスワード</label>
+                  <input name="password" required className="w-full bg-white/5 border-0 border-b border-outline-variant focus:border-secondary focus:ring-0 text-on-surface transition-colors p-base" placeholder="••••••••" type="password" />
                 </div>
                 <button className="w-full bg-secondary text-on-secondary py-md rounded-xl font-headline-md text-headline-md mt-md shadow-xl shadow-secondary/20 hover:brightness-110 transition-all" type="submit">資料請求・お問い合わせ</button>
               </form>

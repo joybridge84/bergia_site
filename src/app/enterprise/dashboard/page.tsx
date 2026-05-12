@@ -62,7 +62,7 @@ export default async function EnterpriseDashboard() {
                   </div>
                   <div>
                     <h3 className="font-headline-md text-headline-md text-on-surface">{student.full_name}</h3>
-                    <p className="text-secondary font-label-sm">{metadata.university || "University"}</p>
+                    <p className="text-secondary font-label-sm">{metadata.university_name || metadata.university || "未設定"}</p>
                   </div>
                 </div>
 
