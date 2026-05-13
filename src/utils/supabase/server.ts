@@ -9,7 +9,8 @@ export async function createClient() {
     throw new Error('NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY must be defined in your environment variables.')
   }
 
-  const cookieStore = await cookies()
+  const cookieRes = cookies()
+  const cookieStore = cookieRes instanceof Promise ? await cookieRes : cookieRes
 
   return createServerClient(
     url,

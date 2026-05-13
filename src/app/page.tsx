@@ -5,11 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 import { signup } from "@/app/auth/actions";
 
 export default function LandingPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>, role: 'student' | 'enterprise') => {
     e.preventDefault();
@@ -37,12 +39,20 @@ export default function LandingPage() {
     formData.append('metadata', JSON.stringify(metadata));
 
     try {
-      await signup(formData);
-      toast.success(role === 'student' ? "挑戦への第一歩、エントリー完了！" : "資料請求を承りました。");
+      const result = await signup(formData);
+      if (result.success) {
+        toast.success(role === 'student' ? "挑戦への第一歩、エントリー完了！" : "資料請求を承りました。");
+        // Delay redirect slightly to show toast
+        setTimeout(() => {
+          router.push(result.role === 'student' ? '/student/mypage' : '/enterprise/dashboard');
+        }, 1500);
+      } else {
+        toast.error("エラーが発生しました: " + result.error);
+      }
     } catch (error: any) {
-      toast.error("エラーが発生しました: " + error.message);
+      toast.error("システムエラーが発生しました。");
     } finally {
-      setLoading(false);
+      if (!loading) setLoading(false); // Only reset if not redirecting (though we redirect anyway)
     }
   };
 

@@ -5,9 +5,11 @@ import Link from "next/link";
 import { login } from "@/app/auth/actions";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,10 +17,17 @@ export default function LoginPage() {
     
     const formData = new FormData(e.currentTarget);
     try {
-      await login(formData);
-      toast.success("ログインしました。おかえりなさい！");
+      const result = await login(formData);
+      if (result.success) {
+        toast.success("ログインしました。おかえりなさい！");
+        setTimeout(() => {
+          router.push(result.role === 'student' ? '/student/mypage' : '/enterprise/dashboard');
+        }, 1000);
+      } else {
+        toast.error("ログインに失敗しました: " + result.error);
+      }
     } catch (error: any) {
-      toast.error("ログインに失敗しました: " + error.message);
+      toast.error("システムエラーが発生しました。");
     } finally {
       setLoading(false);
     }
