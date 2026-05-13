@@ -46,7 +46,15 @@ export async function signup(formData: FormData) {
     return { success: true, role };
   } catch (error: any) {
     console.error("Signup error:", error);
-    return { success: false, error: error.message || "サインアップ中にエラーが発生しました。" };
+    
+    let message = "サインアップ中にエラーが発生しました。";
+    if (error.status === 429 || error.code === 'over_email_send_rate_limit') {
+      message = "認証メールの送信制限を超えました。1時間ほど待ってから再度お試しいただくか、別のメールアドレスをお試しください。";
+    } else if (error.message) {
+      message = error.message;
+    }
+    
+    return { success: false, error: message };
   }
 }
 
